@@ -1,11 +1,26 @@
 from typing import Optional
-from fastapi import Body, FastAPI, Response, status, HTTPException
+from fastapi import Body, FastAPI, Response, status, HTTPException, Depends
 from pydantic import BaseModel
 from random import randrange
+from sqlalchemy.orm import Session
 import psycopg
 import time
 
+import models
+from database import engine, SessionLocal
+
+
+models.Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 class Posts(BaseModel):
     title: str
@@ -41,6 +56,12 @@ def find_index_post(id):
 @app.get("/")
 async def root():
     return {"message": "Welcome to my api!!!"}
+
+# TRYING TO USE SQLALCHEMY
+@app.get("/sqlqlchemy")
+def test_posts(db: Session = Depends(get_db)):
+    return {"status" : "Successful"}
+    
 
 @app.get("/posts")
 def get_posts():
