@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from fastapi import Body, FastAPI, Response, status, HTTPException, Depends
 from pydantic import BaseModel
 from random import randrange
@@ -51,16 +51,16 @@ async def root():
 #     return {"data" : posts}
     
 # GET ALL POSTS
-@app.get("/posts")
+@app.get("/posts", response_model=List[schemas.Post])
 def get_posts(db: Session = Depends(get_db)):
     # cursor.execute(""" SELECT * FROM posts""")
     # posts = cursor.fetchall()
     posts = db.query(models.Post).all()
     print(posts)
-    return {posts}
+    return posts
 
 # CREATE A POST
-@app.post("/posts", status_code=status.HTTP_201_CREATED)
+@app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
 def create_posts(post : schemas.PostCreate, db: Session = Depends(get_db)):
     # cursor.execute(""" INSERT INTO posts (title, content, published) VALUES
     #                (%s, %s, %s) RETURNING * """, (post.title, post.content, post.published))
@@ -74,10 +74,10 @@ def create_posts(post : schemas.PostCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_post)
     
-    return{new_post}
+    return new_post
 
 # GET A POST BY ID
-@app.get("/post/{id}")
+@app.get("/post/{id}", response_model=schemas.Post)
 def get_post(id : int, db: Session = Depends(get_db)):
     # cursor.execute(""" SELECT * FROM posts WHERE id = %s """, (id,)) 
     # post = cursor.fetchone()
@@ -86,7 +86,7 @@ def get_post(id : int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                             detail=f"post with id {id} was not found")
     
-    return{"post detail": post}
+    return post
 
 # DELETE A POST 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -106,7 +106,7 @@ def delete_post(id : int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # UPDATE A POST
-@app.put("/posts/{id}")
+@app.put("/posts/{id}", response_model=schemas.Post)
 def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db)):
     # cursor.execute(""" UPDATE posts SET title = %s, content = %s, published = %s
     #                WHERE id = %s RETURNING * """, (post.title, post.content, post.published, id))
@@ -123,3 +123,12 @@ def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db)
     post_query.update(post.dict(), synchronize_session=False)
     db.commit()
     return {post_query.first()}
+
+@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+def create_user(user : schemas.UserCreate, db: Session = Depends(get_db)):
+    new_user = models.Users(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    return new_user
