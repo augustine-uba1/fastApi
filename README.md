@@ -2,8 +2,9 @@
 creating a fast API REST API application
 
 py -m venv venv
-cd venv 
-Script\activate.bat
+cd venv
+OR 
+venv\Scripts\activate.bat
 
 uvicorn main:app --reload
 pip install fastapi[all]
