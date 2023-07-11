@@ -1,20 +1,13 @@
-from typing import Optional, List
-from fastapi import Body, FastAPI, Response, status, HTTPException, Depends
+from fastapi import  FastAPI
 
-from pydantic import BaseModel
-from random import randrange
-from sqlalchemy.orm import Session
-import psycopg
-import time
+
+
+
+
 
 import models
-from database import engine, get_db
-from routers import post
-from routers import user
-from routers import auth
-
-# import models, schemas, utils
-# from database import engine, get_db
+from database import engine
+from routers import post, user, auth
 
 
 
@@ -22,18 +15,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-while True:    
-    try:
-        conn = psycopg.connect(host="localhost", port="5432", dbname="fastapi",
-        user="postgres", password="Certly20231234$")
-        
-        cursor = conn.cursor()
-        print("connection to database successful!!!!")
-        break
-    except Exception as error:
-        print("connection to database failed")
-        print("Error:", error)
-        time.sleep(2)
+
     
     
 app.include_router(post.router)

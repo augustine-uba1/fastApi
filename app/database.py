@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import psycopg
+import time
 
 SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:Certly20231234$@localhost/fastapi'
 
@@ -16,3 +18,17 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# USE THIS TO CONNECT USING RAW SQL
+# while True:    
+#     try:
+#         conn = psycopg.connect(host="localhost", port="5432", dbname="fastapi",
+#         user="postgres", password="Certly20231234$")
+        
+#         cursor = conn.cursor()
+#         print("connection to database successful!!!!")
+#         break
+#     except Exception as error:
+#         print("connection to database failed")
+#         print("Error:", error)
+#         time.sleep(2)
