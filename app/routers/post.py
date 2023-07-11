@@ -21,7 +21,7 @@ def get_posts(db: Session = Depends(get_db),
     # cursor.execute(""" SELECT * FROM posts""")
     # posts = cursor.fetchall()
     posts = db.query(models.Post).all()
-    print(posts)
+    
     return posts
 
 # CREATE A POST
@@ -53,6 +53,10 @@ def get_post(id : int, db: Session = Depends(get_db),
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                             detail=f"post with id {id} was not found")
+    # RETRIEVE ONLY CURRENT LOGGED IN USERS POST
+    if post.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
+                            detail= "Not authorised to perform this action")   
     
     return post
 
