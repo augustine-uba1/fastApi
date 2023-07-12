@@ -5,6 +5,7 @@ import psycopg
 import time
 from config import settings
 
+# DEFINING THE DATABASE CONNECTION URL
 SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -13,6 +14,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+# DEFINING THE DATABASE SESSION CONNECTION
 def get_db():
     db = SessionLocal()
     try:
@@ -21,11 +23,11 @@ def get_db():
         db.close()
 
 # USE THIS TO CONNECT USING RAW SQL
-# while True:    
+# while True:
 #     try:
 #         conn = psycopg.connect(host="localhost", port="5432", dbname="fastapi",
 #         user="postgres", password="Certly20231234$")
-        
+
 #         cursor = conn.cursor()
 #         print("connection to database successful!!!!")
 #         break

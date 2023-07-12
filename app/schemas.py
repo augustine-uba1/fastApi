@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, conint, Field, validator
 from typing import Optional
 
 class PostBase(BaseModel):
@@ -32,6 +32,13 @@ class Post(PostBase):
     class Config:
         orm_mode = True
         
+class PostOut(BaseModel):
+    Post: Post
+    votes: int
+    
+    class Config:
+        orm_mode = True
+    
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
@@ -49,3 +56,20 @@ class Token(BaseModel):
     
 class TokenData(BaseModel):
     id: Optional[str]
+
+# ALTERNATIVE METHOD OF VALIDATING VOTE DIRECTION (0 OR 1)
+# BUT THIS METHOD ALLOWS FOR NEGATIVE INTEGERS  
+# class Vote(BaseModel):
+#     post_id: int
+#     dir: conint(le=1)
+
+class Vote(BaseModel):
+    post_id: int
+    dir: int = Field(..., ge=0, le=1)
+    
+    
+    @validator('dir')
+    def validate_dir(cls, dir_value):
+        if dir_value not in (0, 1):
+            raise ValueError('dir field must be 0 or 1')
+        return dir_value
