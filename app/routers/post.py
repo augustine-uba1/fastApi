@@ -52,7 +52,7 @@ def create_posts(post : schemas.PostCreate, db: Session = Depends(get_db),
     return new_post
 
 # GET A POST BY ID
-@router.get("/{id}", response_model=schemas.Post)
+@router.get("/{id}", response_model=schemas.PostOut)
 def get_post(id : int, db: Session = Depends(get_db), 
              current_user: int = Depends(oauth2.get_current_user)):
     # cursor.execute(""" SELECT * FROM posts WHERE id = %s """, (id,)) 
@@ -64,8 +64,10 @@ def get_post(id : int, db: Session = Depends(get_db),
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                             detail=f"post with id {id} was not found")
+    
+    # print   (post.owner.email)
     # RETRIEVE ONLY CURRENT LOGGED IN USERS POST
-    if post.owner_id != current_user.id:
+    if post.Post.owner_id  !=  current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 
                             detail= "Not authorised to perform this action")   
     
