@@ -25,8 +25,8 @@ def get_db():
 # USE THIS TO CONNECT USING RAW SQL
 # while True:
 #     try:
-#         conn = psycopg.connect(host="localhost", port="5432", dbname="fastapi",
-#         user="postgres", password="Certly20231234$")
+#         conn = psycopg.connect(host="localhost", port="5432", dbname="[databasename]",
+#         user="[usermane]", password="[password]")
 
 #         cursor = conn.cursor()
 #         print("connection to database successful!!!!")

@@ -3,15 +3,24 @@ import models
 from database import engine
 from routers import post, user, auth, vote
 from config import settings
-
+from fastapi.middleware.cors import CORSMiddleware
 
 print (settings.database_hostname)
 
-
-models.Base.metadata.create_all(bind=engine)
+# NO LONGER NEEDED ALEMBIC IS BEING USED TO GENERATE DATABASE TABLE
+# models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
+# if API is being configured for a specific web app, provide origins as the domain of the web app only
+# as security to restrict access to API
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
     
     
