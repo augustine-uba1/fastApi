@@ -25,7 +25,7 @@ app.add_middleware(
     
 @app.get("/")
 def root():
-    return{"message": "welcome to my FASTAPI App Dev test"}    
+    return{"message": "welcome to my FASTAPI App Dev test fixing bug"}    
 
 
 app.include_router(post.router)
