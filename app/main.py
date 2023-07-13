@@ -23,7 +23,11 @@ app.add_middleware(
 )
 
     
-    
+app.get("/")
+def root():
+    return{"message": "welcome to my FASTAPI App"}    
+
+
 app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)
