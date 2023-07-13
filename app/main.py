@@ -23,7 +23,7 @@ app.add_middleware(
 )
 
     
-app.get("/")
+@app.get("/")
 def root():
     return{"message": "welcome to my FASTAPI App"}    
 
